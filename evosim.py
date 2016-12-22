@@ -1,4 +1,9 @@
 import random
+import numpy as np
+import matplotlib.pyplot as plt
+strf = 5
+chrf = 5
+intf = 3.5
 class Creature(object):
     def __init__(self):
         per = [0] * 100000
@@ -11,12 +16,16 @@ class Creature(object):
         strper = ran1 / 100000
         chrper = (ran2 - ran1) / 100000
         intper = (100000-ran2) / 100000
-        self.strength = strper * 5
-        self.charisma = chrper * 5
-        self.intelligence = intper * 2.5
-        
+        self.strength = strper * strf
+        self.charisma = chrper * chrf
+        self.intelligence = intper * intf
+
 creaturelist = [Creature() for i in range(0, 1001)]
-x = 1000
+x = 100
+stren = np.arange(0, strf, strf/x)
+intel = np.arange(0, intf, intf/x)
+chari = np.arange(0, chrf, chrf/x)
+t = np.arange(0, x, 1)
 for i in range (0, x):
     livelist = [None] * 500
     deadlist = [None] * 500
@@ -49,7 +58,7 @@ for i in range (0, x):
     #charisma will kick bottom 50 creatures livelist and add top 50 creatures deadlist
     cooplive = sorted(livelist, key=lambda Creature: Creature.charisma)
     coopdead = sorted(deadlist, key=lambda Creature: Creature.charisma)
-    temp = [None] * 100
+    temp100 = [None] * 100
     cnt1 = 0
     cnt2 = 0
     while cnt1 < (len(livelist)/10):
@@ -68,7 +77,9 @@ for i in range (0, x):
     sumintd = sum(Creature.intelligence for Creature in deadlist)
     sumchrl = sum(Creature.charisma for Creature in livelist)
     sumchrd = sum(Creature.charisma for Creature in deadlist)
-    #need to add matplotlib script here
+    stren[i] = sumstrl / 500
+    intel[i] = sumintl / 500
+    chari[i] = sumchrl / 500
     print ("Generation " + str(i+1))
     print ("Average strength of living was: " + str(sumstrl / 500))
     print ("Average strength of dead was: " + str(sumstrd / 500))
@@ -104,6 +115,9 @@ for i in range (0, x):
         nextlist[r].intelligence = newint
         nextlist[r].charisma = newchr
     creaturelist = livelist + nextlist
+intel = intel * (5/3.5)
+plt.plot(t, stren, 'r', t, intel, 'b', t, chari, 'g')
+plt.show()
     
         
         
